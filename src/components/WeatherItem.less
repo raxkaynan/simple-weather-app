@@ -1,5 +1,42 @@
 .WeatherItem {
-  &__temp::after {
-    content: "\00b0";
+  background-color: #EEF6FB;
+  padding: 0.5em;
+
+  .details {
+    display: flex;
+    justify-content: center;
+
+    .temp {
+      font-size: 2em;
+    }
+
+    .icon {
+      font-size: 1.5em;
+    }
+
+    & > div {
+      margin: 8px;
+      text-align: left;
+    }
+  }
+
+  .temp {
+    font-weight: bold;
+    font-size: 1.3em;
+    letter-spacing: -0.06em;
+
+    &::after {
+      content: "\00b0";
+    }
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & > div {
+    margin: 0.5em 0;
   }
 }

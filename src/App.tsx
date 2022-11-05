@@ -1,19 +1,21 @@
 import React from 'react';
 
 import './App.less';
-import { City, Weather } from './types';
+import { City, Weather, Forecast } from './types';
+import Tabs from './components/Tabs';
 import WeatherCard from './components/WeatherCard';
-import { getWeather } from './api';
+import { getWeather, getForecast } from './api';
 
 type AppState = {
   selectedCity: City,
-  weather: {} | null,
+  weather: Weather | null,
+  forecast: Forecast | null,
   loading: boolean,
 };
 
 const cities = [
-  { name: 'manila', country: 'PH' },
   { name: 'london', country: 'GB' },
+  { name: 'manila', country: 'PH' },
   { name: 'ottawa', country: 'CA' },
 ];
 
@@ -21,6 +23,7 @@ class App extends React.Component<{}, AppState> {
   state: AppState = {
     selectedCity: cities[0],
     weather: null,
+    forecast: null,
     loading: false,
   };
 
@@ -28,18 +31,10 @@ class App extends React.Component<{}, AppState> {
     this.fetchWeather();
   }
 
-  componentDidUpdate(prevProps: {}, prevState: AppState) {
-    const { selectedCity } = this.state;
-
-    if (prevState.selectedCity.name !== selectedCity.name) {
-      this.fetchWeather();
-    }
-  }
-
-  handleTabClick(city: City) {
+  handleTabChange(tabIdx: number) {
     this.setState({
-      selectedCity: city,
-    });
+      selectedCity: cities[tabIdx],
+    }, this.fetchWeather);
   }
 
   async fetchWeather() {
@@ -47,35 +42,34 @@ class App extends React.Component<{}, AppState> {
     this.setState({ loading: true });
 
     try {
-      const weather: Weather = await getWeather(selectedCity);
+      const [weather, forecast]: [Weather, Forecast] = await Promise.all([
+        getWeather(selectedCity),
+        getForecast(selectedCity),
+      ]);
+
       this.setState({
         weather,
+        forecast,
         loading: false,
       });
     } catch (error) {
-      console.error((error as Error).message);
+      alert((error as Error).message);
     }
   }
 
   render() {
-    const { selectedCity, weather, loading } = this.state;
+    const {
+      selectedCity, weather, forecast, loading,
+    } = this.state;
 
     return (
       <div className="App">
-        <div className="tabs">
-          {cities.map((city) => (
-            <button
-              className={selectedCity?.name === city.name ? 'selected' : ''}
-              key={city.name}
-              type="button"
-              role="tab"
-              onClick={() => this.handleTabClick(city)}
-            >
-              {city.name}
-            </button>
-          ))}
-        </div>
-        {loading ? 'Loading...' : (weather && <WeatherCard weather={weather} />)}
+        <Tabs
+          values={cities.map((city) => city.name)}
+          selected={selectedCity.name}
+          onChange={(tabIdx: number) => this.handleTabChange(tabIdx)}
+        />
+        <WeatherCard weather={weather} forecast={forecast} loading={loading} />
       </div>
     );
   }

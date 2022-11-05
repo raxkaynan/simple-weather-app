@@ -1,8 +1,14 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
-import { Weather } from '../types';
+import { Forecast, Weather } from '../types';
 import WeatherCard from './WeatherCard';
 import { WeatherItemProps } from './WeatherItem';
+
+jest.mock('@fortawesome/react-fontawesome', () => ({
+  FontAwesomeIcon: function MockFontAwesomeIcon() {
+    return <div>spinner</div>;
+  },
+}));
 
 jest.mock(
   './WeatherItem',
@@ -11,29 +17,63 @@ jest.mock(
   },
 );
 
-it('renders Today weather details', () => {
-  const weather: Weather = {
-    weather: [
-      {
-        id: 802,
-        main: 'Clouds',
-        description: 'scattered clouds',
-        icon: '03n',
-      },
-    ],
-    main: {
-      temp: 12.91,
-    },
-    dt: 1667532842,
-    sys: {
-      country: 'GB',
-    },
+const weather: Weather = {
+  city: {
     name: 'London',
-  };
+    country: 'GB',
+  },
+  day: 'Today',
+  description: 'Clouds',
+  icon: '03n',
+  temp: 11,
+};
 
-  render(<WeatherCard weather={weather} />);
+const forecast: Forecast = {
+  city: {
+    name: 'London',
+    country: 'GB',
+  },
+  list: [{
+    day: 'Sat',
+    description: 'Clouds',
+    icon: '03n',
+    temp: 11,
+  }, {
+    day: 'Sun',
+    description: 'Clouds',
+    icon: '03n',
+    temp: 13,
+  }, {
+    day: 'Mon',
+    description: 'Rain',
+    icon: '10n',
+    temp: 12,
+  }, {
+    day: 'Tue',
+    description: 'Rain',
+    icon: '10n',
+    temp: 11,
+  }],
+};
+
+it('renders Today weather details', () => {
+  render(<WeatherCard weather={weather} forecast={forecast} />);
   const todayDetails = screen.getByText(/today/i);
 
-  expect(todayDetails).toHaveTextContent(`${Math.round(weather.main.temp)}`);
-  expect(todayDetails).toHaveTextContent(weather.weather[0].main);
+  expect(todayDetails).toHaveTextContent(`${weather.temp}`);
+  expect(todayDetails).toHaveTextContent(weather.description);
+});
+
+it('renders weather forecast details', () => {
+  render(<WeatherCard weather={weather} forecast={forecast} />);
+
+  forecast.list.forEach(({ day, temp }) => {
+    expect(screen.getByText(new RegExp(day, 'i'))).toHaveTextContent(`${temp}`);
+  });
+});
+
+it('renders loading spinner when loading data', () => {
+  render(<WeatherCard weather={weather} forecast={forecast} loading />);
+
+  expect(screen.getByText(/spinner/i)).toBeInTheDocument();
 });

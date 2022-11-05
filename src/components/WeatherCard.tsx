@@ -1,31 +1,41 @@
-import { Weather } from '../types';
-import WeatherItem from './WeatherItem';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-function getShortDayFromDate(timestamp: number) {
-  const msTs = timestamp * 1000;
-  return new Date(msTs).toDateString().slice(0, 3);
-}
+import { Weather, Forecast } from '../types';
+import WeatherItem from './WeatherItem';
+import './WeatherCard.less';
 
 export type WeatherCardProps = {
-  weather: Weather,
+  weather: Weather | null,
+  forecast: Forecast | null,
+  loading?: boolean,
 };
 
-function WeatherCard({ weather }: WeatherCardProps) {
-  const today = {
-    day: 'Today' as const,
-    temp: Math.round(weather.main.temp),
-    description: weather.weather[0].main,
-    icon: weather.weather[0].icon,
-  };
-
+function WeatherCard({ weather, forecast, loading = false }: WeatherCardProps) {
   return (
     <div className="WeatherCard">
-      <div>
-        <WeatherItem
-          {...today}
-          showDescription
-        />
-      </div>
+      {loading || !weather || !forecast ? (
+        <FontAwesomeIcon icon={faSpinner} color="#5FB0E8" size="xl" spin />
+      ) : (
+        <>
+          <div className="primary">
+            <WeatherItem
+              day="Today"
+              temp={weather.temp}
+              description={weather.description}
+              icon={weather.icon}
+              showDescription
+            />
+          </div>
+          {forecast.list.map((fcWeather) => (
+            <div className="secondary" key={fcWeather.day}>
+              <WeatherItem
+                {...fcWeather}
+              />
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }

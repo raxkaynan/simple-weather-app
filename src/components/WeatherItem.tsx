@@ -1,8 +1,10 @@
-import { Weather } from '../types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { FAIconMap } from '../helpers';
 import './WeatherItem.less';
 
 export type WeatherItemProps = {
-  day: 'Today' | 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun',
+  day: string,
   temp: number,
   description: string,
   icon: string,
@@ -16,11 +18,31 @@ function WeatherItem({
   icon,
   showDescription = false,
 }: WeatherItemProps) {
+  const renderedIcon = (
+    <div className="icon" title={description}>
+      <FontAwesomeIcon icon={FAIconMap[icon]} color="#61AEBC" size="2x" fixedWidth />
+    </div>
+  );
+
   return (
     <div className="WeatherItem">
-      <div className="WeatherItem__day">{day}</div>
-      <div className="WeatherItem__temp">{temp}</div>
-      {showDescription && <div>{description}</div>}
+      <div className="day">{day}</div>
+      {showDescription ? (
+        <div className="details">
+          {renderedIcon}
+          <div>
+            <div className="temp">{temp}</div>
+            <div>{description}</div>
+          </div>
+        </div>
+      ) : (
+        <>
+          {renderedIcon}
+          <div>
+            <div className="temp">{temp}</div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

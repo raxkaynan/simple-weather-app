@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react';
 
 import WeatherItem from './WeatherItem';
 
-it('renders day, temperature, and weather description', () => {
+it('renders day, temperature, icon, and weather description', () => {
   const props = {
-    day: 'Today' as const, temp: 19, description: 'Clouds', icon: '04n', showDescription: true,
+    day: 'Today', temp: 19, description: 'Clear', icon: 'clear-d', showDescription: true,
   };
 
   render(<WeatherItem {...props} />);
@@ -12,11 +12,12 @@ it('renders day, temperature, and weather description', () => {
   expect(screen.getByText(props.day)).toBeInTheDocument();
   expect(screen.getByText(props.temp)).toBeInTheDocument();
   expect(screen.getByText(props.description)).toBeInTheDocument();
+  expect(screen.getByTitle(props.description).children[0]).toHaveAttribute('data-icon', 'sun');
 });
 
-it('renders day and temperature without description', () => {
+it('renders day, temperature, and icon without description', () => {
   const props = {
-    day: 'Today' as const, temp: 19, description: 'Clouds', icon: '04n',
+    day: 'Tue', temp: 19, description: 'Clear', icon: 'clear',
   };
 
   render(<WeatherItem {...props} />);
@@ -24,4 +25,5 @@ it('renders day and temperature without description', () => {
   expect(screen.getByText(props.day)).toBeInTheDocument();
   expect(screen.getByText(props.temp)).toBeInTheDocument();
   expect(screen.queryByText(props.description)).not.toBeInTheDocument();
+  expect(screen.getByTitle(props.description).children[0]).toHaveAttribute('data-icon', 'cloud');
 });
