@@ -5,6 +5,7 @@ import { City, Weather, Forecast } from './types';
 import Tabs from './components/Tabs';
 import WeatherCard from './components/WeatherCard';
 import { getWeather, getForecast } from './api';
+import appConfig from './app-config.json';
 
 type AppState = {
   selectedCity: City,
@@ -13,11 +14,7 @@ type AppState = {
   loading: boolean,
 };
 
-const cities = [
-  { name: 'london', country: 'GB' },
-  { name: 'manila', country: 'PH' },
-  { name: 'ottawa', country: 'CA' },
-];
+const { cities }: { cities: City[] } = appConfig;
 
 class App extends React.Component<{}, AppState> {
   state: AppState = {

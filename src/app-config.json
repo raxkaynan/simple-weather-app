@@ -1,0 +1,7 @@
+{
+  "cities": [
+    { "name": "london", "country": "GB" },
+    { "name": "manila", "country": "PH" },
+    { "name": "ottawa", "country": "CA" }
+  ]
+}
