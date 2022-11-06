@@ -80,10 +80,6 @@ function convertOWMForecastToForecast(owmForecast: OWMForecast): Forecast {
   };
 }
 
-export function getFAIcon(icon: string) {
-  return FAIconMap[icon];
-}
-
 export {
   convertOWMWeatherToWeather,
   convertOWMForecastToForecast,
