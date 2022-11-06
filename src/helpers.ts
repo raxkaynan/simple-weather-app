@@ -17,7 +17,7 @@ import {
 const FAIconMap: Record<string, IconDefinition> = {
   'clear-d': faSun,
   'clear-n': faMoon,
-  clear: faCloud,
+  clear: faSun,
   clouds: faCloud,
   drizzle: faCloudRain,
   rain: faCloudShowersHeavy,

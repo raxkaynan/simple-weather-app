@@ -25,5 +25,5 @@ it('renders day, temperature, and icon without description', () => {
   expect(screen.getByText(props.day)).toBeInTheDocument();
   expect(screen.getByText(props.temp)).toBeInTheDocument();
   expect(screen.queryByText(props.description)).not.toBeInTheDocument();
-  expect(screen.getByTitle(props.description).children[0]).toHaveAttribute('data-icon', 'cloud');
+  expect(screen.getByTitle(props.description).children[0]).toHaveAttribute('data-icon', 'sun');
 });
