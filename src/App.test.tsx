@@ -18,18 +18,6 @@ jest.mock('./api', () => ({
   getForecast: (city: City) => Promise.resolve({ city }),
 }));
 
-let container: HTMLElement | null;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  container && document.body.removeChild(container);
-  container = null;
-});
-
 it('renders city tabs', () => {
   render(<App />);
   const tabs = screen.getAllByRole('tab');
